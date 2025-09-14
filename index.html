@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>联系我</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #333;
+    }
+
+    /* 微信提示条 */
+    #weixin-tip {
+      display: none;
+      width: 100%;
+      background: #e67e22;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    #weixin-tip strong {
+      font-size: 16px;
+      display: block;
+      margin: 4px 0;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 400px;
+      margin: 30px auto;
+      padding: 24px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .contact-item {
+      margin: 16px 0;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      margin: 10px 0;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #219653;
+    }
+
+    .qrcode {
+      margin: 24px auto;
+      width: 100%;
+      max-width: 220px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .manual-copy {
+      display: none;
+      padding: 16px;
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      margin: 16px 0;
+      text-align: left;
+    }
+    .manual-copy p {
+      margin: 8px 0;
+      font-size: 15px;
+    }
+    .manual-copy small {
+      color: #888;
+      font-size: 12px;
+    }
+
+    footer {
+      margin-top: 20px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 微信提示条 -->
+  <div id="weixin-tip">
+    ⚠️ 当前在微信中浏览<br>
+    <strong>请点击右上角 ··· → 在浏览器中打开</strong>
+    以使用一键复制功能
+  </div>
+
+  <div class="container">
+    <h1>联系我</h1>
+
+    <!-- 一键复制按钮 -->
+    <button onclick="copyText('138-1234-5678')">📱 复制手机号</button>
+    <button onclick="copyText('yourname@example.com')">📧 复制邮箱</button>
+
+    <!-- 微信内显示：手动复制区 -->
+    <div class="manual-copy" id="manual-copy">
+      <p><strong>手机号：</strong> <span id="phone-text">138-1234-5678</span></p>
+      <p><strong>邮箱：</strong> <span id="email-text">yourname@example.com</span></p>
+      <small>长按文字可复制</small>
+    </div>
+
+    <p style="margin: 20px 0; color: #777; font-size: 14px;">或扫码添加微信</p>
+    <img src="weixin_qrcode.png" alt="微信二维码" class="qrcode" />
+
+    <p style="margin-top: 16px; color: #999; font-size: 13px;">感谢查看</p>
+  </div>
+
+  <footer>
+    © 2025 | 专业简洁 · 一触即达
+  </footer>
+
+  <script>
+    // 检测微信环境
+    if (/MicroMessenger/i.test(navigator.userAgent)) {
+      document.getElementById('weixin-tip').style.display = 'block';
+      document.getElementById('manual-copy').style.display = 'block';
+    }
+
+    // 一键复制函数
+    async function copyText(text) {
+      const cleanText = text.replace(/-/g, '');
+
+      if (navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(cleanText);
+          alert('✅ 已复制：' + cleanText);
+          return;
+        } catch (err) {
+          console.warn('Clipboard API 失败', err);
+        }
+      }
+
+      // 降级方案
+      const textarea = document.createElement('textarea');
+      textarea.value = cleanText;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+
+      try {
+        document.execCommand('copy');
+        alert('✅ 已复制：' + cleanText);
+      } catch (err) {
+        alert('❌ 复制失败，请长按下方文字手动复制');
+      }
+
+      document.body.removeChild(textarea);
+    }
+  </script>
+</body>
+</html>
